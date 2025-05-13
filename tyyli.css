@@ -1,0 +1,88 @@
+﻿/* Sivun taustan väriksi sininen */
+body 
+{
+  background-color: lightblue; 
+}
+
+/* Otsikon väri ja asettelu, 10 pikselin verran irti vasemmalta */
+h1 
+{
+  margin-left: 10px;
+}
+
+/* Sisäotsikko tummennettuna */
+.h3
+{
+font-weight:bold;
+}
+
+/* Kuvan leveydeksi 60 pikseliä */
+img 
+{
+  width: 60px;
+}
+
+/* Sisällön näyttämiseen littyvät asetukset (joustavaksi) */
+#sisalto 
+{
+  display: flex;                 
+}
+
+/* Tulostettavan tekstin asetukset */
+.tulostus
+{
+background-color: white;
+font-weight:bold;
+font-size:17px;
+text-align: center;
+border-style: outset;
+padding: 8px 8px;
+width:365px;
+height:350px;
+}
+
+/* Koristekehykset painikkeiden ja tkenttien ympärille */
+.kehykset
+{
+border-style: outset;
+padding: 10px 10px;
+width:390px;
+}
+
+/* Tässä määritetään miten otsikko ja kuva näytetään samalla rivillä */
+.otsikko_ja_kuva
+{
+display:flex; 
+align-items: center;
+}
+
+/* Leveydet tekstikentille ja irroitus vasemmalta samalle tasolle */
+.tekstikentat
+{
+width: 250px;	
+margin-left: 90px;
+}
+
+/* Laatikon nimen asettelu, 5 pikselin verran irti vasemmalta  */
+label 
+{
+  margin-left: 5px;
+}
+
+/* Painikkeen asettelu, irti sivuston vasemmalta reunalta 230 pikseliä */
+.painike_asettelu
+{
+  margin-left: 200px;
+}
+
+/* Painikkeen ulkoasu, väriksi sininen, leveys, jne. */
+button 
+{
+  background-color: #717071;
+  color: white; 
+  padding: 10px 17px;
+  text-align: center;
+  display: inline-block;
+  font-size: 15px;
+  width: 150px;
+}

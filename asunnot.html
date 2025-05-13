@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<! -- Asunto-ohjelma by Esa Niemeläinen -->
+
+<html>
+<head>
+
+<title>Kiinteistö ohjelma</title>
+
+<! -- Annetaan sivulle myös tyylitiedosto nimeltä tyyli  -->
+<link rel="stylesheet" href="tyyli.css">
+
+</head>
+<body>
+
+<div class="otsikko_ja_kuva">
+<img src="logo.png">
+
+<h1>Kiinteistö ohjelma</h1>
+</div>
+
+<! -- Sivuston sisällön alue -->
+<div id="sisalto">
+
+<! -- Järjestetään sisältö vasemmalle puolelle tästä -->
+<div id="vasen">
+
+<div class="kehykset">
+<text class="h3">LISÄÄ ASUNTO</text>
+<br>
+<br>
+<text>Kohdenro:<text>
+<! -- Käyttäjä ei voi luoda itse kohdenumeroa, vaan ohjelma hoitaa tämän automaattisesti. 
+Ensimmäinen asunto lähtee numerosta yksi. Input kenttä poistetaan käytöstä, mutta näytetään.
+Esimerkki katsottu sivustolta: https://www.w3schools.com/tags/att_input_disabled.asp -->
+<input type="teksti_kentta" id="kohdenumero" class="tekstikentat" placeholder="" disabled>
+<br>
+<text>Osoite:<text>
+<input type="teksti_kentta" id="osoite" class="tekstikentat" placeholder="Syötä osoite">
+<br>
+<text>Hinta:<text>
+<input type="teksti_kentta" id="hinta" class="tekstikentat" placeholder="Euroa €">
+<br>
+<text>Pinta-ala:<text>
+<input type="teksti_kentta" id="ala" class="tekstikentat" placeholder="Neliötä m²">
+<br>
+<br>
+<! -- Viedään tiedot syötetystä asunnosta eteenpäin oliota varten -->
+<button onclick="vie_tiedot()" class="painike_asettelu">Lisää</button>
+<br>
+</div>
+
+<div class="kehykset">
+<text class="h3">HAE ASUNTO</text>
+<br>
+<br>
+<text>Kohdenro:</text>
+<input type="teksti_kentta" id="hae_asunto" class="tekstikentat" placeholder="Syötä kohteen numero">
+<br>
+<br>
+
+<! -- Hae myytävä asunto kohdenumeroa vastaan -->
+<button onclick="hae_tiedot()" class="painike_asettelu">Hae</button>
+
+</div>
+</div>
+<! -- Vasemman puolen sisältö loppuu tähän -->
+
+<! -- Järjestetään sisältö oikealle puolelle tästä -->
+<div id="oikea">
+
+<div class="kehykset">
+
+<! -- Asuntojen tulostus tehdään tässä -->
+<div class="tulostus" id="tulostus">Myytävät asunnot<br>------------------------------------------------------</div>
+</div>
+
+</div>
+<! -- Oikean puolen sisältö loppuu tähän -->
+
+</div>
+<! -- Sivuston sisältö loppuu tähän -->
+
+<! -- JavaScript alkaa tästä -->
+<script>
+
+
+// Metodi neliön hinnan laskemiseen
+// ----------------------------------------------------------------------------------------------------------------
+function laskeNelioHinta(hinta,neliot) 
+{
+  // Jaetaan hinta neliöillä ja palautetaan tämän tulos
+  let tulos = hinta / neliot;
+  
+  // Palautetaan neliön hinta kahden desimaalin tarkkuudella
+  return "<li>Neliön hinta: " + tulos.toFixed(2) + " €</li>";
+}
+// ----------------------------------------------------------------------------------------------------------------
+
+
+// Alustetaan automaattinen kohdenumerolaskuri
+let kohdenro = 0;
+
+// Luodaan taulukko asunto-olioita varten
+let asunnot = [];
+
+// Näytetään kohdenumeron laskuri input kentässä. Tässä kohdenro muuttujaan lisätään selkeyden vuoksi yksi,
+// koska oikeasti numerot lähtevät ykkösestä eteenpäin nollan sijasta.
+document.getElementById('kohdenumero').value = kohdenro +1;
+
+
+// Funktio asuntojen tallentamiseen
+// ----------------------------------------------------------------------------------------------------------------
+function vie_tiedot() 
+{
+
+// Otetaan kentistä tarvittavat tiedot ylös
+let osoite = document.getElementById("osoite").value;
+let hinta = document.getElementById("hinta").value;
+let ala = document.getElementById("ala").value;
+
+
+// Jos hinta ja pinta-alassa käytetään pilkkua desimaalina, korvatan tämä pisteellä jotta laskutoimitus onnistuu.
+// Esimerkki katsottu osoitteesta: https://flaviocopes.com/how-to-comma-dot-javascript/
+hinta = hinta.replace(/,/g, '.') 
+ala = ala.replace(/,/g, '.') 
+
+
+// Tehdään syötettyjen arvojen tarkistus. Tyhjä-arvoa ei hyväksytä ja osoitteessa pitää olla vähintään 7 kirjainta.
+// Hinta ja osoite täytyy olla numeroita, kirjaimia ei hyväksytä. Esimerkki katsottu osoitteesta:
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isNaN
+// ----------------------------------------------------------------------------------------------------------------
+if (osoite == "" || hinta == "" || ala == "" || osoite.length < 7 || isNaN(hinta) || isNaN(ala))
+{
+
+// Annetaan ilmoitus virheellisistä tiedoista
+document.getElementById("tulostus").innerHTML = "Täytä tarvittavat tiedot:<br>------------------------------------------------------<br><br><li>Osoitteessa täytyy olla vähintään 7 kirjainta</li><br><li>Hinta numeroina</li><br><li>Pinta-ala numeroina</li>";
+// ----------------------------------------------------------------------------------------------------------------
+}
+
+// Mikäli arvot kelpaavat, lisätään asunto
+else
+{
+
+// Kasvatetaan kohdenumeroa yhdellä asunnon lisäyksessä
+kohdenro = kohdenro + 1;
+
+// Asunto konstruktori
+// ---------------------------------------------------------------------------------------------------------
+function Asunto(kohdenro, osoite, hinta, ala) {
+  this.kohdenro = kohdenro;
+  this.osoite = osoite;
+  this.hinta = hinta;
+  this.ala = ala;
+}
+
+// Luodaan olio konstruktorilla
+const Kohde = new Asunto(kohdenro, osoite, hinta, ala);
+// ---------------------------------------------------------------------------------------------------------
+
+// Kirjataan asunto-olio taulukkoon asunnot
+asunnot.push(Kohde);
+
+// Annetaan ilmoitus onnistuneesta lisäyksestä taulukkoon ja näytetään asuntojen lukumäärä tämän jälkeen
+document.getElementById("tulostus").innerHTML = "Asunto lisätty onnistuneesti!<br>------------------------------------------------------<br><br>Asuntoja on nyt " + asunnot.length
++ " kpl";
+
+// Kasvatetaan kohdenumeron input kenttään yhdellä
+document.getElementById('kohdenumero').value = kohdenro + 1;
+
+// Nollataan asunnon input kentät uutta varten
+document.getElementById('osoite').value = "";
+document.getElementById('hinta').value = "";
+document.getElementById('ala').value = "";
+
+}
+} // Funktio loppuu tähän
+
+
+// Funktio asuntojen hakemiseen
+// ----------------------------------------------------------------------------------------------------------------
+function hae_tiedot() 
+{
+
+// Otetaan käyttäjän syöttämä kohdenumero talteen muuttujaan
+let haku_nro = document.getElementById("hae_asunto").value;
+
+// Käyttäjän syöttämästä kohdenumerosta miinustetaan aina yksi pois, koska 
+// taulukon ensimmäinen alkio alkaa nollasta (kohdenumero = alkio)
+haku_nro = haku_nro - 1;
+
+
+// Tehdään tarkistus asunnon hakuun. Mikäli käyttäjä syöttää kohdenumeron mitä ei löydy asunnot-taulusta,
+// saadaan arvoksi undefined (määrittelemätön). Tällöin hakua ei viedä eteenpäin ja annetaan ilmoitus tästä.
+// ---------------------------------------------------------------------------------------------------------
+if (asunnot[haku_nro] === undefined)
+{
+document.getElementById("tulostus").innerHTML = "Kohdetta ei löydy numerolla!<br>------------------------------------------------------<br><br>Asuntoja on numeroon " + 
+asunnot.length + " asti";
+}
+
+// Jos hakukenttään syötetään kirjaimia numeroiden sijasta, annetaan ilmoitus tästä
+if (isNaN(haku_nro))
+{
+document.getElementById("tulostus").innerHTML = "Syötä hakuun vain numeroita!<br>------------------------------------------------------<br><br>Asuntoja on numeroon " + 
+asunnot.length + " asti";
+}
+
+// Muussa tapauksessa jos kohdenumero (asunto) löytyy, tehdään tarvittavat toimenpiteet
+else
+{
+
+// Otetaan syötetystä asunnosta tiedot talteen neliöiden hinnan laskemista varten
+let hinta = asunnot[haku_nro].hinta;
+let neliot = asunnot[haku_nro].ala;
+
+// Kutsutaan funktio neliön hinnan laskemiseen
+let neliohinta = laskeNelioHinta(hinta,neliot);
+
+// Jos kohdenumero vastaa taulukon alkiota, tulostetaan olion tiedot taulukoista asettelulla
+document.getElementById("tulostus").innerHTML = "Kohdenumero: " + asunnot[haku_nro].kohdenro + "<br>" +
+"------------------------------------------------------" + "<br><br>" +
+"<li>" + asunnot[haku_nro].osoite + "</li><br>" + "<li>Hinta: " + asunnot[haku_nro].hinta + " €" + "</li><br>" + 
+"<li>Pinta-ala: " + asunnot[haku_nro].ala + " m²" + "</li><br>" + neliohinta;
+// ---------------------------------------------------------------------------------------------------------
+
+}
+} // Funktio loppuu tähän
+
+
+</script>
+<! -- JavaScript loppuu tähän -->
+
+</body>
+</html>
